@@ -22,7 +22,7 @@ const Dashboard = () => {
     });
 
     const [salesData, setSalesData] = useState<SalesResponse | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchData = async (newFilters?: Partial<Filters>) => {
