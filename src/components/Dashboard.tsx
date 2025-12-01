@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { format, subDays } from 'date-fns';
 import { Filters, SalesResponse } from '@/lib/types';
 import { fetchSales } from '@/lib/api';

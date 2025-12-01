@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { SaleItem } from '@/lib/types';
 import { format, parseISO } from 'date-fns';
 

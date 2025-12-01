@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthToken, SalesResponse, Filters } from './types';
+import { AuthToken, SalesResponse, Filters } from '@/lib/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
