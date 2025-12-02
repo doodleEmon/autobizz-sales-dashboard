@@ -34,7 +34,7 @@ const Dashboard = () => {
             const finalFilters = newFilters ? { ...filters, ...newFilters } : filters;
             const data = await fetchSales(finalFilters);
             setSalesData(data);
-            
+
             if (newFilters) {
                 setFilters(finalFilters);
             }
@@ -92,7 +92,7 @@ const Dashboard = () => {
     };
 
     const handlePrevPage = () => {
-        if (salesData?.pagination.before && currentPage > 1) {
+        if (currentPage > 1 && salesData?.pagination.before) {
             setCurrentPage(prev => prev - 1);
             fetchData({
                 before: salesData.pagination.before,
@@ -100,6 +100,8 @@ const Dashboard = () => {
             });
         }
     };
+
+    console.log("next-page-token:", salesData?.pagination.after)
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">

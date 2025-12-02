@@ -1,7 +1,6 @@
 'use client';
 
 import { PaginationTokens } from '@/lib/types';
-import { BsDot } from 'react-icons/bs';
 import { MdKeyboardArrowLeft } from 'react-icons/md';
 
 interface PaginationProps {
@@ -9,6 +8,7 @@ interface PaginationProps {
     loading: boolean;
     currentPage: number;
     totalResults: number;
+    hasMorePages?: boolean;
     onNext: () => void;
     onPrev: () => void;
 }
@@ -26,15 +26,17 @@ const Pagination = ({
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-white border-t border-gray-200">
-            <div className="text-sm text-gray-600 flex items-center">
+            {/* Page Info */}
+            <div className="text-sm text-gray-600">
                 <span className="font-medium text-gray-900">Page {currentPage}</span>
                 {totalResults > 0 && (
-                    <span className="flex items-center">
-                        <BsDot size={20} /> Showing {totalResults} result{totalResults !== 1 ? 's' : ''}
+                    <span className="ml-2">
+                        • Showing {totalResults} result{totalResults !== 1 ? 's' : ''}
                     </span>
                 )}
             </div>
 
+            {/* Navigation Buttons */}
             <div className="flex items-center gap-2">
                 <button
                     onClick={onPrev}
@@ -43,7 +45,7 @@ const Pagination = ({
                         inline-flex items-center px-4 py-2 border text-sm font-medium rounded-lg
                         transition-all duration-200
                         ${hasPrev
-                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm cursor-pointer'
+                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm'
                             : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
                         }
                     `}
@@ -63,7 +65,7 @@ const Pagination = ({
                         inline-flex items-center px-4 py-2 border text-sm font-medium rounded-lg
                         transition-all duration-200
                         ${hasNext
-                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm cursor-pointer'
+                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm'
                             : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
                         }
                     `}

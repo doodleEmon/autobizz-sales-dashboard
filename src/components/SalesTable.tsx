@@ -3,7 +3,6 @@
 import { SaleItem } from '@/lib/types';
 import { format, parseISO } from 'date-fns';
 import { BsArrowDown, BsArrowUp } from 'react-icons/bs';
-import { IoIosArrowRoundUp } from 'react-icons/io';
 
 interface SalesTableProps {
     sales: SaleItem[];
