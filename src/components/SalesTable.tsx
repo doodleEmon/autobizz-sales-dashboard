@@ -2,6 +2,8 @@
 
 import { SaleItem } from '@/lib/types';
 import { format, parseISO } from 'date-fns';
+import { BsArrowDown, BsArrowUp } from 'react-icons/bs';
+import { IoIosArrowRoundUp } from 'react-icons/io';
 
 interface SalesTableProps {
     sales: SaleItem[];
@@ -37,9 +39,9 @@ const SalesTable = ({
         if (sortBy !== column) return <span className="text-gray-400">↕</span>;
 
         return sortOrder === 'asc' ? (
-            <span className="text-blue-600">↑</span>
+            <span className="text-blue-600"><BsArrowUp /></span>
         ) : (
-            <span className="text-blue-600">↓</span>
+            <span className="text-blue-600"><BsArrowDown /></span>
         );
     };
 
@@ -52,7 +54,7 @@ const SalesTable = ({
                             Date & Time
                             <button
                                 onClick={() => onSort('date')}
-                                className="ml-2 focus:outline-none"
+                                className="ml-2 focus:outline-none cursor-pointer"
                             >
                                 <SortIcon column="date" />
                             </button>
@@ -61,7 +63,7 @@ const SalesTable = ({
                             Price
                             <button
                                 onClick={() => onSort('price')}
-                                className="ml-2 focus:outline-none"
+                                className="ml-2 focus:outline-none cursor-pointer"
                             >
                                 <SortIcon column="price" />
                             </button>

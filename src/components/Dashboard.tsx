@@ -24,8 +24,9 @@ const Dashboard = () => {
     const [salesData, setSalesData] = useState<SalesResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const fetchData = async (newFilters?: Partial<Filters>) => {
+    const fetchData = async (newFilters?: Partial<Filters>, resetPage: boolean = false) => {
         try {
             setLoading(true);
             setError(null);
@@ -33,8 +34,13 @@ const Dashboard = () => {
             const finalFilters = newFilters ? { ...filters, ...newFilters } : filters;
             const data = await fetchSales(finalFilters);
             setSalesData(data);
+            
             if (newFilters) {
                 setFilters(finalFilters);
+            }
+
+            if (resetPage) {
+                setCurrentPage(1);
             }
         } catch (err) {
             setError('Failed to fetch sales data. Please try again.');
@@ -54,7 +60,7 @@ const Dashboard = () => {
             endDate: end,
             after: undefined,
             before: undefined
-        });
+        }, true);
     };
 
     const handleFilterChange = (newFilters: Partial<Filters>) => {
@@ -62,7 +68,7 @@ const Dashboard = () => {
             ...newFilters,
             after: undefined,
             before: undefined
-        });
+        }, true);
     };
 
     const handleSort = (column: 'date' | 'price') => {
@@ -72,21 +78,27 @@ const Dashboard = () => {
             sortOrder: newSortOrder,
             after: undefined,
             before: undefined
-        });
+        }, true);
     };
 
-    const handleNextPage = (afterToken: string) => {
-        fetchData({
-            after: afterToken,
-            before: undefined
-        });
+    const handleNextPage = () => {
+        if (salesData?.pagination.after) {
+            setCurrentPage(prev => prev + 1);
+            fetchData({
+                after: salesData.pagination.after,
+                before: undefined
+            });
+        }
     };
 
-    const handlePrevPage = (beforeToken: string) => {
-        fetchData({
-            before: beforeToken,
-            after: undefined
-        });
+    const handlePrevPage = () => {
+        if (salesData?.pagination.before && currentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+            fetchData({
+                before: salesData.pagination.before,
+                after: undefined
+            });
+        }
     };
 
     return (
@@ -125,7 +137,7 @@ const Dashboard = () => {
                 <div className="lg:col-span-3">
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">Sales Trend</h2>
-                        {loading ? (
+                        {loading && !salesData ? (
                             <div className="h-80 flex items-center justify-center">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                             </div>
@@ -138,15 +150,24 @@ const Dashboard = () => {
                         <div className="p-6 border-b border-gray-200">
                             <h2 className="text-lg font-semibold text-gray-800">Sales Records</h2>
                             <p className="text-gray-600 text-sm mt-1">
-                                Showing {salesData?.results.Sales.length || 0} sales
-                                {salesData?.pagination.after && " (Next page available)"}
-                                {salesData?.pagination.before && " (Previous page available)"}
+                                {loading && !salesData ? (
+                                    'Loading...'
+                                ) : (
+                                    <>
+                                        Showing {salesData?.results.Sales.length || 0} sales on page {currentPage}
+                                        {salesData?.pagination.after && ' • More results available'}
+                                    </>
+                                )}
                             </p>
                         </div>
 
-                        {loading ? (
+                        {loading && !salesData ? (
                             <div className="p-8 flex items-center justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            </div>
+                        ) : salesData?.results.Sales.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500">
+                                No sales found for the selected filters
                             </div>
                         ) : (
                             <>
@@ -157,22 +178,23 @@ const Dashboard = () => {
                                     onSort={handleSort}
                                 />
 
-                                <div className="p-6 border-t border-gray-200">
-                                    {salesData && (
-                                        <Pagination
-                                            pagination={salesData.pagination}
-                                            loading={loading}
-                                            onNext={handleNextPage}
-                                            onPrev={handlePrevPage}
-                                        />
-                                    )}
-                                </div>
+                                {salesData && (
+                                    <Pagination
+                                        pagination={salesData.pagination}
+                                        loading={loading}
+                                        currentPage={currentPage}
+                                        totalResults={salesData.results.Sales.length}
+                                        onNext={handleNextPage}
+                                        onPrev={handlePrevPage}
+                                    />
+                                )}
                             </>
                         )}
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 };
+
 export default Dashboard;
