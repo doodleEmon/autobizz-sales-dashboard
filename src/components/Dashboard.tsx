@@ -26,6 +26,9 @@ const Dashboard = () => {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
+    // Adding pagination history to track tokens for going back
+    const [paginationHistory, setPaginationHistory] = useState<string[]>([]);
+
     const fetchData = async (newFilters?: Partial<Filters>, resetPage: boolean = false) => {
         try {
             setLoading(true);
@@ -41,6 +44,7 @@ const Dashboard = () => {
 
             if (resetPage) {
                 setCurrentPage(1);
+                setPaginationHistory([]); // Clearing history when resetting
             }
         } catch (err) {
             setError('Failed to fetch sales data. Please try again.');
@@ -82,26 +86,46 @@ const Dashboard = () => {
     };
 
     const handleNextPage = () => {
-        if (salesData?.pagination.after) {
-            setCurrentPage(prev => prev + 1);
+        if (!salesData?.pagination.after) return;
+
+        const afterToken = salesData.pagination.after;
+        const beforeToken = salesData.pagination.before;
+
+        // Saving the AFTER token to go forward
+        // This becomes the BEFORE token to come back to this page
+        setPaginationHistory(prev => [...prev, afterToken]);
+
+        setCurrentPage(page => page + 1);
+        fetchData({
+            after: afterToken,
+            before: undefined
+        });
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage <= 1) return;
+
+        if (currentPage === 2) {
+            // Going back to page 1 - fresh request with no pagination tokens
+            setCurrentPage(1);
+            setPaginationHistory([]);
             fetchData({
-                after: salesData.pagination.after,
+                after: undefined,
+                before: undefined
+            });
+        } else {
+            // Going back to previous page - using the saved after token as before token
+            const tokenForPrevPage = paginationHistory[paginationHistory.length - 2];
+
+            setCurrentPage(prev => prev - 1);
+            setPaginationHistory(prev => prev.slice(0, -1));
+
+            fetchData({
+                after: tokenForPrevPage,
                 before: undefined
             });
         }
     };
-
-    const handlePrevPage = () => {
-        if (currentPage > 1 && salesData?.pagination.before) {
-            setCurrentPage(prev => prev - 1);
-            fetchData({
-                before: salesData.pagination.before,
-                after: undefined
-            });
-        }
-    };
-
-    console.log("next-page-token:", salesData?.pagination.after)
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -157,7 +181,6 @@ const Dashboard = () => {
                                 ) : (
                                     <>
                                         Showing {salesData?.results.Sales.length || 0} sales on page {currentPage}
-                                        {salesData?.pagination.after && ' • More results available'}
                                     </>
                                 )}
                             </p>
