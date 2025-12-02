@@ -45,7 +45,7 @@ const Pagination = ({
                         inline-flex items-center px-4 py-2 border text-sm font-medium rounded-lg
                         transition-all duration-200
                         ${hasPrev
-                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm'
+                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm cursor-pointer'
                             : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
                         }
                     `}
@@ -65,7 +65,7 @@ const Pagination = ({
                         inline-flex items-center px-4 py-2 border text-sm font-medium rounded-lg
                         transition-all duration-200
                         ${hasNext
-                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm'
+                            ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm cursor-pointer'
                             : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
                         }
                     `}
