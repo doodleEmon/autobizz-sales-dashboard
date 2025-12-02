@@ -20,13 +20,6 @@ const Pagination = ({
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-gray-600">
-                {hasNext || hasPrev ? (
-                    <span>Using token-based pagination (before/after tokens)</span>
-                ) : (
-                    <span>First page - navigate to see more records</span>
-                )}
-            </div>
 
             <div className="flex items-center gap-3">
                 <button
@@ -47,9 +40,9 @@ const Pagination = ({
                     Previous Page
                 </button>
 
-                <div className="text-xs text-gray-500 px-3 py-1 bg-gray-100 rounded">
+                {/* <div className="text-xs text-gray-500 px-3 py-1 bg-gray-100 rounded">
                     Token: {pagination.after ? '↗' : pagination.before ? '↖' : '•'}
-                </div>
+                </div> */}
 
                 <button
                     onClick={() => onNext(pagination.after!)}
