@@ -21,12 +21,12 @@ const Pagination = ({
     onNext,
     onPrev,
 }: PaginationProps) => {
-    const hasNext = !!pagination.after && !loading;
+    const hasNext = !!pagination.after && !loading && totalResults === 50;
     const hasPrev = currentPage > 1 && !!pagination.before && !loading;
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-white border-t border-gray-200">
-            {/* Page Info */}
+
             <div className="text-sm text-gray-600">
                 <span className="font-medium text-gray-900">Page {currentPage}</span>
                 {totalResults > 0 && (
@@ -36,7 +36,6 @@ const Pagination = ({
                 )}
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex items-center gap-2">
                 <button
                     onClick={onPrev}
